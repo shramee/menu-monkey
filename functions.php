@@ -6,6 +6,9 @@
 
  */
 
+include 'inc/listify.php';
+include 'inc/job-manager.php';
+
 function listify_child_styles() {
 
     wp_enqueue_style( 'listify-child', get_stylesheet_uri() );
@@ -52,33 +55,6 @@ function custom_listify_single_job_listing_meta() {
 }
 add_action( 'listify_single_job_listing_meta', 'custom_listify_single_job_listing_meta', 40 );
 
-/* Salary field */
-
-add_filter( 'submit_job_form_fields', 'frontend_add_price_field' );
-
-function frontend_add_price_field( $fields ) {
-  $fields['job']['job_price'] = array(
-    'label'       => __( 'Prijs (€)', 'job_manager' ),
-    'type'        => 'text',
-    'required'    => true,
-    'placeholder' => 'bijv. 20',
-    'priority'    => 7
-  );
-  return $fields;
-}
-
-add_filter( 'job_manager_job_listing_data_fields', 'admin_add_price_field' );
-
-function admin_add_price_field( $fields ) {
-  $fields['_job_price'] = array(
-    'label'       => __( 'Prijs (€)', 'job_manager' ),
-    'type'        => 'text',
-    'placeholder' => 'bijv. 20',
-    'description' => ''
-  );
-  return $fields;
-}
-
 add_action( 'single_job_listing_meta_end', 'display_job_price_data' );
 
 function display_job_price_data() {
@@ -122,15 +98,15 @@ function filter_by_price_field_query_args( $query_args, $args ) {
 		if ( ! empty( $form_data['filter_by_price'] ) ) {
 			$selected_range = sanitize_text_field( $form_data['filter_by_price'] );
 			switch ( $selected_range ) {
-				case 'upto20' :
+				case 'upto10' :
 					$query_args['meta_query'][] = array(
 						'key'     => '_job_price',
-						'value'   => '20',
+						'value'   => '10',
 						'compare' => '<',
 						'type'    => 'NUMERIC'
 					);
 				break;
-				case 'over60' :
+				case 'over25' :
 					$query_args['meta_query'][] = array(
 						'key'     => '_job_price',
 						'value'   => '25',
